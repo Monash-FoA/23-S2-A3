@@ -46,6 +46,7 @@ class Mode2Tests(TestCase):
         # Final score: 190 + 100 = 290
         # The fifth, sixth, seventh, eighth pirate can do a number of different things but the best score they end up with is 200.
         expected_scores = [400, 370, 300, 290, 200, 200, 200, 200]
+        self.assertEqual(len(results), len(expected_scores))
         for (island, sent_crew), expected in zip(results, expected_scores):
             if island is None:
                 self.assertEqual(2 * 100, expected)
@@ -83,6 +84,7 @@ class Mode2Tests(TestCase):
         results_1 = nav.simulate_day(100)
         # Same first 3 decisions as test 2.1
         expected_1 = [400, 370, 300]
+        self.assertEqual(len(results_1), len(expected_1))
         for (island, sent_crew), expected in zip(results_1, expected_1):
             if island is None:
                 self.assertEqual(2 * 100, expected)
@@ -105,6 +107,7 @@ class Mode2Tests(TestCase):
         results_2 = nav.simulate_day(100)
         # The first 2 pirates on this day can plunder island F, after which the same decisions as in test 2.1 continue
         expected_2 = [600, 400, 290]
+        self.assertEqual(len(results_2), len(expected_2))
         for (island, sent_crew), expected in zip(results_2, expected_2):
             if island is None:
                 self.assertEqual(2 * 100, expected)
