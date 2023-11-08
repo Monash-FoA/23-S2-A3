@@ -1,0 +1,68 @@
+from heapq import heappush, heappop
+
+class Island:
+    def __init__(self, name, marines, money):
+        self.name = name
+        self.marines = marines
+        self.money = money
+
+class Mode2Navigator:
+    def __init__(self, n_pirates):
+        self.n_pirates = n_pirates
+        self.islands = {}
+    
+    def add_islands(self, islands):
+        for island in islands:
+            self.islands[island.name] = island
+
+    def simulate_day(self, crew):
+        pirate_choices = []
+        pirate_scores = []
+        available_islands = [(island.money, island.name) for island in self.islands.values()]
+        heapify(available_islands)
+
+        for _ in range(self.n_pirates):
+            if not available_islands:
+                pirate_choices.append((None, 0))
+                pirate_scores.append(0)
+            else:
+                max_score = 0
+                chosen_island = None
+                chosen_crew = 0
+                
+                for money, name in available_islands:
+                    for c in range(crew + 1):
+                        if c == 0:
+                            continue
+                        marines = self.islands[name].marines
+                        score = 2 * c + money // marines
+                        if score > max_score:
+                            max_score = score
+                            chosen_island = name
+                            chosen_crew = c
+                
+                pirate_choices.append((self.islands[chosen_island], chosen_crew))
+                pirate_scores.append(max_score)
+                
+                available_islands.remove((self.islands[chosen_island].money, chosen_island))
+                self.islands[chosen_island].money -= (pirate_scores[-1] - 2 * chosen_crew)
+                self.islands[chosen_island].marines -= chosen_crew
+                
+        return list(zip(pirate_choices, pirate_scores))
+
+    def __str__(self):
+        return f"Mode2Navigator with {self.n_pirates} pirates"
+
+# Example usage:
+if __name__ == "__main__":
+    island1 = Island("A", 100, 200)
+    island2 = Island("B", 50, 150)
+    island3 = Island("C", 75, 300)
+    
+    navigator = Mode2Navigator(3)
+    navigator.add_islands([island1, island2, island3])
+    
+    day_results = navigator.simulate_day(10)
+    
+    for i, (choice, score) in enumerate(day_results):
+        print(f"Pirate {i+1}: Island {choice.name if choice else 'None'}, Crew: {score // 2}, Score: {score}")
